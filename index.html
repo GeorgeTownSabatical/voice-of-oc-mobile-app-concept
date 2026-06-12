@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voice of OC Mobile App Concept</title>
+    <meta
+      name="description"
+      content="A working mobile app concept for Voice of OC's civic news experience."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="prototype-layout">
+      <section class="phone-shell" aria-label="Voice of OC mobile app prototype">
+        <div class="phone-status">
+          <span>9:41</span>
+          <span>5G 100%</span>
+        </div>
+
+        <header class="app-header">
+          <button class="icon-button" type="button" data-action="search" aria-label="Search">
+            <span aria-hidden="true">⌕</span>
+          </button>
+          <img
+            class="brand-logo"
+            src="https://i0.wp.com/voiceofoc.org/wp-content/uploads/2020/02/VoiceofOC.png?resize=336%2C114&ssl=1"
+            alt="Voice of OC"
+          >
+          <button class="support-button" type="button" data-view="support">Donate</button>
+        </header>
+
+        <section class="content-frame" id="appView" tabindex="-1" aria-live="polite"></section>
+
+        <nav class="bottom-nav" aria-label="Primary">
+          <button class="nav-item active" type="button" data-view="home">
+            <span aria-hidden="true">▦</span>
+            <span>Home</span>
+          </button>
+          <button class="nav-item" type="button" data-view="myoc">
+            <span aria-hidden="true">◎</span>
+            <span>My OC</span>
+          </button>
+          <button class="nav-item" type="button" data-view="latest">
+            <span aria-hidden="true">≡</span>
+            <span>Latest</span>
+          </button>
+          <button class="nav-item" type="button" data-view="alerts">
+            <span aria-hidden="true">!</span>
+            <span>Alerts</span>
+          </button>
+          <button class="nav-item" type="button" data-view="saved">
+            <span aria-hidden="true">☆</span>
+            <span>Saved</span>
+          </button>
+        </nav>
+      </section>
+
+      <aside class="design-panel" aria-label="Design system notes">
+        <div class="panel-kicker">Mobile concept</div>
+        <h1>Calm civic utility for Orange County readers</h1>
+        <p>
+          A newsroom-led app surface for local accountability reporting, city following,
+          alerts, source documents, and reader support.
+        </p>
+
+        <section class="panel-section">
+          <h2>Color System</h2>
+          <div class="swatches">
+            <span style="--swatch:#F68121">Orange</span>
+            <span style="--swatch:#E47300">Deep orange</span>
+            <span style="--swatch:#C30000">Urgent red</span>
+            <span style="--swatch:#111111">Ink</span>
+            <span style="--swatch:#F0F0F0">Soft gray</span>
+          </div>
+        </section>
+
+        <section class="panel-section">
+          <h2>Core Screens</h2>
+          <p>Home, My OC, Latest, Alerts, Saved, Story, and Support are implemented in the prototype.</p>
+        </section>
+
+        <section class="panel-section">
+          <h2>Design Document</h2>
+          <a class="doc-link" href="outputs/voice-of-oc-mobile-app-design-document.md">
+            Open the Markdown handoff
+          </a>
+        </section>
+      </aside>
+    </main>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "voice-of-oc-mobile-app-concept",
+  "version": "1.0.0",
+  "description": "A mobile app design prototype for Voice of OC's civic news experience.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "python3 -m http.server 4173 --directory .",
+    "preview": "python3 -m http.server 4174 --directory dist"
+  },
+  "keywords": [
+    "news",
+    "mobile-app",
+    "civic-news",
+    "design-prototype",
+    "voice-of-oc"
+  ],
+  "license": "MIT"
+}
