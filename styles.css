@@ -330,10 +330,14 @@ p {
 
 .primary-button,
 .secondary-button {
+  align-items: center;
   border-radius: 3px;
+  display: inline-flex;
   font-weight: 900;
+  justify-content: center;
   min-height: 40px;
   padding: 0 14px;
+  text-decoration: none;
 }
 
 .primary-button {
@@ -465,13 +469,15 @@ p {
   margin-bottom: 6px;
 }
 
-.newsletter-form {
+.newsletter-form,
+.slack-form {
   display: grid;
   gap: 8px;
   margin-top: 12px;
 }
 
-.newsletter-form input {
+.newsletter-form input,
+.slack-form input {
   border: 1px solid var(--orange);
   border-radius: 3px;
   min-height: 42px;

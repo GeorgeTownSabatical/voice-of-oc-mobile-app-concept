@@ -2,7 +2,7 @@
 
 A working static mobile prototype and design handoff for a Voice of OC civic news app concept.
 
-The prototype translates Voice of OC's current website identity into a mobile product system for local accountability reporting, city following, civic alerts, saved stories, newsletter signup, and nonprofit support.
+The prototype translates Voice of OC's current website identity into a mobile product system for local accountability reporting, city following, civic alerts, saved stories, newsletter signup, nonprofit support, Slack invite requests, and organization/community participation.
 
 The employee-only Staff Studio and IT Access Desk have been separated into their own repo and Pages site:
 
@@ -29,6 +29,12 @@ The static site is generated in `dist/`.
 
 - Interactive app prototype: `index.html`, `styles.css`, `script.js`
 - Design document: `outputs/voice-of-oc-mobile-app-design-document.md`
+
+## Integrations represented
+
+- Donations: public actions link to Voice of OC's live `support.voiceofoc.org/campaign/796416/donate` campaign and `voiceofoc.org/donate`.
+- Payment/giving stack observed on the website: Classy embedded giving scripts and Virtuous CRM/newsletter embeds.
+- Slack: prototype invite-request forms for readers and organizations. No public official Slack invite URL was found, so production should connect these forms to a real Slack workspace invitation/admin approval flow.
 
 ## Brand basis
 

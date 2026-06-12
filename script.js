@@ -100,6 +100,7 @@ const alerts = [
 const followedTopics = ["Countywide", "Santa Ana", "Public Health", "Homelessness", "Arts & Culture"];
 const saved = new Set(["santa-ana-budget"]);
 const appView = document.querySelector("#appView");
+const donationUrl = "https://support.voiceofoc.org/campaign/796416/donate";
 
 function imageCard(story, compact = false) {
   return `
@@ -159,6 +160,16 @@ function renderHome() {
         <form class="newsletter-form">
           <input type="email" value="" placeholder="Email address" aria-label="Email address">
           <button class="primary-button" type="submit">Sign up</button>
+        </form>
+      </section>
+
+      <section class="module">
+        <h2 class="module-title">Join the civic Slack</h2>
+        <p class="summary">Readers and local organizations can request an invite for moderated topic channels, public meeting reminders, and community source calls.</p>
+        <form class="slack-form">
+          <input type="email" placeholder="Email for Slack invite" aria-label="Email for Slack invite" required>
+          <input type="text" placeholder="Organization or neighborhood" aria-label="Organization or neighborhood">
+          <button class="secondary-button" type="submit">Request Slack invite</button>
         </form>
       </section>
     </section>
@@ -295,7 +306,7 @@ function renderSupport() {
       </div>
       <section class="support-card module orange">
         <h2 class="module-title">Voice of OC is built for public-interest reporting.</h2>
-        <p class="summary">Your support helps reporters keep following city budgets, county decisions, public records, arts, and community life.</p>
+        <p class="summary">Your support helps reporters keep following city budgets, county decisions, public records, arts, and community life. Online donations route to Voice of OC's current support campaign.</p>
         <div class="amount-row" style="margin-top:12px">
           <button class="amount-button" type="button">$10</button>
           <button class="amount-button active" type="button">$25</button>
@@ -303,9 +314,22 @@ function renderSupport() {
           <button class="amount-button" type="button">$100</button>
         </div>
         <div class="button-row">
-          <button class="primary-button" type="button">Donate monthly</button>
-          <button class="secondary-button" type="button">One time</button>
+          <a class="primary-button" href="${donationUrl}" target="_blank" rel="noreferrer">Donate online</a>
+          <a class="secondary-button" href="https://voiceofoc.org/donate" target="_blank" rel="noreferrer">Other ways</a>
         </div>
+      </section>
+      <section class="module">
+        <h2 class="module-title">Donation platform notes</h2>
+        <p class="summary">The live site uses support.voiceofoc.org campaign links, Classy embedded giving scripts, and Virtuous CRM/newsletter embeds. Production should connect donation buttons to those systems directly.</p>
+      </section>
+      <section class="module">
+        <h2 class="module-title">Organizations can join Slack</h2>
+        <p class="summary">Civic groups, nonprofits, neighborhood associations, and local institutions can request moderated Slack access for public-interest updates.</p>
+        <form class="slack-form">
+          <input type="text" placeholder="Organization name" aria-label="Organization name" required>
+          <input type="email" placeholder="Contact email" aria-label="Contact email" required>
+          <button class="secondary-button" type="submit">Request organization invite</button>
+        </form>
       </section>
       <section class="module">
         <h2 class="module-title">Trust links</h2>
@@ -414,6 +438,11 @@ document.addEventListener("submit", (event) => {
   if (event.target.matches(".newsletter-form")) {
     event.preventDefault();
     event.target.innerHTML = `<p class="summary"><strong>Signed up.</strong> This confirms the newsletter flow without sending data.</p>`;
+  }
+
+  if (event.target.matches(".slack-form")) {
+    event.preventDefault();
+    event.target.innerHTML = `<p class="summary"><strong>Slack invite requested.</strong> This prototype stores no data; production would send this to Slack admin review.</p>`;
   }
 });
 
