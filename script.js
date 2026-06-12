@@ -100,6 +100,86 @@ const alerts = [
 const followedTopics = ["Countywide", "Santa Ana", "Public Health", "Homelessness", "Arts & Culture"];
 const saved = new Set(["santa-ana-budget"]);
 const appView = document.querySelector("#appView");
+let currentRole = "editor";
+
+const roleDefinitions = {
+  reporter: {
+    label: "Reporter",
+    summary: "Can draft stories, edit own drafts, upload source notes, and submit for review.",
+    permissions: ["Draft", "Edit own", "Submit"]
+  },
+  editor: {
+    label: "Editor",
+    summary: "Can edit newsroom copy, approve stories, schedule alerts, and request revisions.",
+    permissions: ["Edit all", "Approve", "Schedule"]
+  },
+  admin: {
+    label: "Admin",
+    summary: "Can manage staff access, publish, change sections, and review the audit trail.",
+    permissions: ["Publish", "Manage users", "Audit"]
+  },
+  viewer: {
+    label: "Viewer",
+    summary: "Can review drafts and analytics without changing editorial content.",
+    permissions: ["Read only", "Comment"]
+  }
+};
+
+const staffStories = [
+  {
+    id: "chemical-tank",
+    title: "OC officials face questions after chemical tank evacuations are lifted",
+    section: "Countywide",
+    owner: "Civic Desk",
+    status: "Needs editor review",
+    updated: "10:18 AM",
+    sensitivity: "Breaking follow-up",
+    sourceCount: 4,
+    notes: "Add reimbursement source document before publishing the follow-up alert."
+  },
+  {
+    id: "santa-ana-budget",
+    title: "Budget cuts loom for parks and after-school programs in Santa Ana",
+    section: "Santa Ana",
+    owner: "City Reporter",
+    status: "Draft",
+    updated: "9:42 AM",
+    sensitivity: "Budget",
+    sourceCount: 3,
+    notes: "Waiting on city finance response."
+  },
+  {
+    id: "infant-health",
+    title: "Officials will not pursue renewed funding for Black infant health program",
+    section: "Public Health",
+    owner: "Health Reporter",
+    status: "Approved",
+    updated: "8:55 AM",
+    sensitivity: "Public health",
+    sourceCount: 5,
+    notes: "Ready for homepage placement and newsletter summary."
+  }
+];
+
+const auditEvents = [
+  "Editor approved Public Health story for homepage review.",
+  "Reporter added source document to Santa Ana budget draft.",
+  "Admin updated alert permissions for breaking news channel."
+];
+
+function can(action) {
+  const permissions = {
+    draft: ["reporter", "editor", "admin"],
+    editOwn: ["reporter", "editor", "admin"],
+    editAll: ["editor", "admin"],
+    approve: ["editor", "admin"],
+    publish: ["admin"],
+    manageUsers: ["admin"],
+    viewOnly: ["viewer", "reporter", "editor", "admin"]
+  };
+
+  return permissions[action]?.includes(currentRole);
+}
 
 function imageCard(story, compact = false) {
   return `
@@ -315,6 +395,117 @@ function renderSupport() {
   `;
 }
 
+function roleOption([key, role]) {
+  return `
+    <button class="role-button ${currentRole === key ? "active" : ""}" type="button" data-role="${key}">
+      <strong>${role.label}</strong>
+      <span>${role.permissions.join(" · ")}</span>
+    </button>
+  `;
+}
+
+function permissionPill(label, enabled) {
+  return `<span class="permission-pill ${enabled ? "enabled" : "locked"}">${enabled ? "Allowed" : "Locked"} · ${label}</span>`;
+}
+
+function staffStoryCard(item) {
+  const editable = can("editAll") || (can("editOwn") && item.owner.includes("Reporter"));
+  return `
+    <article class="staff-card">
+      <div class="staff-card-top">
+        <div>
+          <div class="tag">${item.section} · ${item.sensitivity}</div>
+          <h3 class="staff-title">${item.title}</h3>
+        </div>
+        <span class="status-badge">${item.status}</span>
+      </div>
+      <div class="staff-meta-grid">
+        <span>Owner<br><strong>${item.owner}</strong></span>
+        <span>Updated<br><strong>${item.updated}</strong></span>
+        <span>Sources<br><strong>${item.sourceCount}</strong></span>
+      </div>
+      <p class="summary">${item.notes}</p>
+      <div class="button-row">
+        <button class="primary-button" type="button" data-edit-story="${item.id}" ${editable ? "" : "disabled"}>${editable ? "Edit draft" : "View only"}</button>
+        <button class="secondary-button" type="button" data-workflow="approve" ${can("approve") ? "" : "disabled"}>Approve</button>
+        <button class="secondary-button" type="button" data-workflow="publish" ${can("publish") ? "" : "disabled"}>Publish</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderStaff() {
+  const role = roleDefinitions[currentRole];
+  appView.innerHTML = `
+    <section class="screen staff-screen">
+      <div class="screen-header">
+        <div>
+          <div class="eyebrow">Editable newsroom workspace</div>
+          <h1 class="screen-title">Staff Studio</h1>
+        </div>
+      </div>
+
+      <section class="module orange">
+        <h2 class="module-title">${role.label} access</h2>
+        <p class="summary">${role.summary}</p>
+        <div class="permission-grid">
+          ${permissionPill("Draft content", can("draft"))}
+          ${permissionPill("Edit all copy", can("editAll"))}
+          ${permissionPill("Approve stories", can("approve"))}
+          ${permissionPill("Publish live", can("publish"))}
+          ${permissionPill("Manage users", can("manageUsers"))}
+          ${permissionPill("Read workspace", can("viewOnly"))}
+        </div>
+      </section>
+
+      <div class="section-label">Switch role</div>
+      <div class="role-grid">
+        ${Object.entries(roleDefinitions).map(roleOption).join("")}
+      </div>
+
+      <div class="section-label">Editorial queue</div>
+      <div class="staff-list">
+        ${staffStories.map(staffStoryCard).join("")}
+      </div>
+
+      <div class="section-label">Quick edit form</div>
+      <form class="edit-form">
+        <label>
+          Headline
+          <input name="headline" value="${staffStories[0].title}" ${can("draft") ? "" : "disabled"}>
+        </label>
+        <label>
+          Section
+          <select name="section" ${can("editAll") || can("draft") ? "" : "disabled"}>
+            <option>Countywide</option>
+            <option>Santa Ana</option>
+            <option>Public Health</option>
+            <option>Arts & Culture</option>
+          </select>
+        </label>
+        <label>
+          Editor note
+          <textarea name="note" rows="4" ${can("draft") ? "" : "disabled"}>${staffStories[0].notes}</textarea>
+        </label>
+        <button class="primary-button" type="submit" ${can("draft") ? "" : "disabled"}>Save draft</button>
+      </form>
+
+      <div class="section-label">Access model</div>
+      <section class="access-table">
+        <div><strong>Reporter</strong><span>Own drafts, source notes, submit for review</span></div>
+        <div><strong>Editor</strong><span>Edit all stories, approve copy, schedule alerts</span></div>
+        <div><strong>Admin</strong><span>Publish, manage staff, review audit history</span></div>
+        <div><strong>Viewer</strong><span>Read-only review for board, legal, or partner staff</span></div>
+      </section>
+
+      <div class="section-label">Audit trail</div>
+      <section class="audit-list">
+        ${auditEvents.map((event) => `<p>${event}</p>`).join("")}
+      </section>
+    </section>
+  `;
+}
+
 function renderStory(id) {
   const story = stories.find((item) => item.id === id) || stories[0];
   appView.innerHTML = `
@@ -352,7 +543,8 @@ const renderers = {
   latest: renderLatest,
   alerts: renderAlerts,
   saved: renderSaved,
-  support: renderSupport
+  support: renderSupport,
+  staff: renderStaff
 };
 
 function setActiveNav(viewName) {
@@ -407,6 +599,21 @@ document.addEventListener("click", (event) => {
       saveButton.classList.toggle("saved", saved.has(id));
       saveButton.textContent = saved.has(id) ? "★" : "☆";
     }
+    return;
+  }
+
+  const roleButton = event.target.closest("[data-role]");
+  if (roleButton) {
+    currentRole = roleButton.dataset.role;
+    renderStaff();
+    return;
+  }
+
+  const workflowButton = event.target.closest("[data-workflow]");
+  if (workflowButton) {
+    const action = workflowButton.dataset.workflow;
+    auditEvents.unshift(`${roleDefinitions[currentRole].label} attempted ${action}; prototype recorded the workflow event.`);
+    renderStaff();
   }
 });
 
@@ -414,6 +621,12 @@ document.addEventListener("submit", (event) => {
   if (event.target.matches(".newsletter-form")) {
     event.preventDefault();
     event.target.innerHTML = `<p class="summary"><strong>Signed up.</strong> This confirms the newsletter flow without sending data.</p>`;
+  }
+
+  if (event.target.matches(".edit-form")) {
+    event.preventDefault();
+    auditEvents.unshift(`${roleDefinitions[currentRole].label} saved a draft from Staff Studio.`);
+    event.target.insertAdjacentHTML("beforeend", `<p class="form-confirmation">Draft saved in prototype workspace.</p>`);
   }
 });
 

@@ -507,8 +507,40 @@ A designer should be able to produce first-round mobile wireframes from this doc
 - Story page.
 - Donation/support screen.
 - Component sheet for article cards, chips, alert banners, CTAs, newsletter form, and source blocks.
+- Staff Studio screen for editorial drafting, approval, publishing permissions, and audit visibility.
 
-## 10. Review Criteria
+## 10. Staff Editing and Access
+
+The app should include a staff-facing workspace that is easy for newsroom staff to understand without technical training. It should support role-based access rather than giving every internal user the same controls.
+
+### Roles
+
+| Role | Access level | Intended use |
+| --- | --- | --- |
+| Reporter | Draft and edit own content | Write stories, add source notes, submit drafts for review |
+| Editor | Edit and approve newsroom content | Revise copy, approve stories, schedule alerts, request revisions |
+| Admin | Publish and manage staff access | Publish live content, manage users, review audit history |
+| Viewer | Read-only | Board, legal, partner, or observer review without editing rights |
+
+### Staff workspace requirements
+
+- Show the current user's role clearly.
+- Explain what that role can and cannot do.
+- Keep disabled actions visible but locked, so staff understand the workflow.
+- Provide an editorial queue with status, owner, section, source count, and update time.
+- Provide a simple draft-editing form for headline, section, editor notes, and source status.
+- Record workflow events in an audit trail.
+- Separate editorial approval from publishing, so an editor can approve but an admin controls final publication if that is the chosen policy.
+
+### Production integration notes
+
+- Connect role selection to real authentication and staff identity.
+- Store drafts, notes, source documents, and workflow status in the CMS.
+- Log all edits, approvals, publish actions, and permission changes.
+- Keep source-document access separate from public story access when records are sensitive or embargoed.
+- Require confirmation for publish, alert-send, homepage-placement, and donation-campaign changes.
+
+## 11. Review Criteria
 
 The v1 design is successful if:
 
@@ -519,9 +551,10 @@ The v1 design is successful if:
 - The Story Page is comfortable for long reading and trust-forward.
 - Donation prompts support the nonprofit model without undermining editorial trust.
 - Alerts feel useful and controlled, not noisy.
+- Staff can identify what they are allowed to edit, approve, publish, or only review.
 - The design can be implemented as a mobile product without requiring a full rebrand.
 
-## 11. Implementation Defaults
+## 12. Implementation Defaults
 
 - Platform: native-style mobile app, iOS first but designable for Android.
 - Layout baseline: 390 px wide mobile viewport.
@@ -531,7 +564,7 @@ The v1 design is successful if:
 - Motion: fast, functional transitions only. No decorative animation system for v1.
 - Offline: saved story reading is desirable but not required for first visual wireframes.
 
-## 12. Source Notes
+## 13. Source Notes
 
 This design document adapts the live Voice of OC website identity as inspected on June 12, 2026:
 

@@ -2,7 +2,7 @@
 
 A working static mobile prototype and design handoff for a Voice of OC civic news app concept.
 
-The prototype translates Voice of OC's current website identity into a mobile product system for local accountability reporting, city following, civic alerts, saved stories, newsletter signup, and nonprofit support.
+The prototype translates Voice of OC's current website identity into a mobile product system for local accountability reporting, city following, civic alerts, saved stories, newsletter signup, nonprofit support, and a staff-editable newsroom workspace.
 
 ## Run locally
 
@@ -24,6 +24,17 @@ The static site is generated in `dist/`.
 
 - Interactive app prototype: `index.html`, `styles.css`, `script.js`
 - Design document: `outputs/voice-of-oc-mobile-app-design-document.md`
+
+## Staff editing concept
+
+The `Staff` tab demonstrates a lightweight editorial workspace with stratified access:
+
+- Reporter: draft stories, edit own drafts, add source notes, submit for review
+- Editor: edit all copy, approve stories, schedule alerts, request revisions
+- Admin: publish, manage staff access, review audit history
+- Viewer: read-only review for board, legal, partner, or observer access
+
+This is a front-end concept model only. A production version would connect these controls to authentication, CMS records, source-document storage, audit logs, and publishing APIs.
 
 ## Brand basis
 
