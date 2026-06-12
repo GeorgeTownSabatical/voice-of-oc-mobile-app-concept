@@ -2,7 +2,12 @@
 
 A working static mobile prototype and design handoff for a Voice of OC civic news app concept.
 
-The prototype translates Voice of OC's current website identity into a mobile product system for local accountability reporting, city following, civic alerts, saved stories, newsletter signup, nonprofit support, a staff-editable newsroom workspace, and an IT access-management portal.
+The prototype translates Voice of OC's current website identity into a mobile product system for local accountability reporting, city following, civic alerts, saved stories, newsletter signup, and nonprofit support.
+
+The employee-only Staff Studio and IT Access Desk have been separated into their own repo and Pages site:
+
+- Employee portal: https://georgetownsabatical.github.io/voice-of-oc-employee-portal-concept/
+- Employee repo: https://github.com/GeorgeTownSabatical/voice-of-oc-employee-portal-concept
 
 ## Run locally
 
@@ -24,27 +29,6 @@ The static site is generated in `dist/`.
 
 - Interactive app prototype: `index.html`, `styles.css`, `script.js`
 - Design document: `outputs/voice-of-oc-mobile-app-design-document.md`
-
-## Staff editing concept
-
-The `Staff` tab demonstrates a lightweight editorial workspace with stratified access:
-
-- Reporter: draft stories, edit own drafts, add source notes, submit for review
-- Editor: edit all copy, approve stories, schedule alerts, request revisions
-- Admin: publish, manage staff access, review audit history
-- Viewer: read-only review for board, legal, partner, or observer access
-
-This is a front-end concept model only. A production version would connect these controls to authentication, CMS records, source-document storage, audit logs, and publishing APIs.
-
-## IT access portal concept
-
-The `IT` tab demonstrates a separate Access Desk for the technology department:
-
-- Helpdesk: verify identity, reset MFA, route requests, suspend risky sessions
-- Access Admin: approve access, assign newsroom roles, deactivate accounts
-- Security Auditor: review audit events, risky sessions, and permission changes
-
-This keeps editorial approval separate from technical account control. In production, this portal would connect to identity management, SSO/MFA, CMS role mapping, ticketing, session logs, and access-review exports.
 
 ## Brand basis
 
