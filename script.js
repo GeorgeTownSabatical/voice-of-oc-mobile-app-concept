@@ -101,6 +101,7 @@ const followedTopics = ["Countywide", "Santa Ana", "Public Health", "Homelessnes
 const saved = new Set(["santa-ana-budget"]);
 const appView = document.querySelector("#appView");
 let currentRole = "editor";
+let currentItRole = "accessAdmin";
 
 const roleDefinitions = {
   reporter: {
@@ -167,6 +168,63 @@ const auditEvents = [
   "Admin updated alert permissions for breaking news channel."
 ];
 
+const itRoleDefinitions = {
+  helpdesk: {
+    label: "Helpdesk",
+    summary: "Can verify identity, reset MFA, and route access requests without changing publish permissions.",
+    permissions: ["Reset MFA", "Route requests", "Suspend sessions"]
+  },
+  accessAdmin: {
+    label: "Access Admin",
+    summary: "Can assign newsroom roles, approve access requests, deactivate accounts, and enforce least privilege.",
+    permissions: ["Assign roles", "Deactivate", "Approve access"]
+  },
+  security: {
+    label: "Security Auditor",
+    summary: "Can review audit logs, risky sessions, failed login patterns, and permission changes.",
+    permissions: ["Audit", "Risk review", "Export logs"]
+  }
+};
+
+const accessRequests = [
+  {
+    name: "Maya Chen",
+    team: "City Desk",
+    request: "Reporter access for Anaheim coverage",
+    status: "Identity verified",
+    risk: "Low",
+    ticket: "VOC-1042"
+  },
+  {
+    name: "Luis Ortega",
+    team: "Audience",
+    request: "Temporary newsletter editor access",
+    status: "Needs editor sponsor",
+    risk: "Medium",
+    ticket: "VOC-1043"
+  },
+  {
+    name: "Board Observer",
+    team: "Governance",
+    request: "Read-only viewer account",
+    status: "Pending approval",
+    risk: "Low",
+    ticket: "VOC-1044"
+  }
+];
+
+const accountHealth = [
+  { name: "Civic Desk", role: "Editor", mfa: "Enabled", session: "Active", lastSeen: "8 min ago" },
+  { name: "Health Reporter", role: "Reporter", mfa: "Enabled", session: "Active", lastSeen: "22 min ago" },
+  { name: "Former Contributor", role: "Viewer", mfa: "Expired", session: "Suspended", lastSeen: "31 days ago" }
+];
+
+const itAuditEvents = [
+  "Access Admin approved Reporter role for City Desk after sponsor confirmation.",
+  "Helpdesk reset MFA for Health Reporter after identity verification.",
+  "Security Auditor flagged expired Viewer account for deactivation."
+];
+
 function can(action) {
   const permissions = {
     draft: ["reporter", "editor", "admin"],
@@ -179,6 +237,20 @@ function can(action) {
   };
 
   return permissions[action]?.includes(currentRole);
+}
+
+function canIt(action) {
+  const permissions = {
+    resetMfa: ["helpdesk", "accessAdmin"],
+    approveAccess: ["accessAdmin"],
+    assignRoles: ["accessAdmin"],
+    deactivate: ["accessAdmin"],
+    audit: ["security", "accessAdmin"],
+    exportLogs: ["security"],
+    suspendSession: ["helpdesk", "accessAdmin", "security"]
+  };
+
+  return permissions[action]?.includes(currentItRole);
 }
 
 function imageCard(story, compact = false) {
@@ -506,6 +578,121 @@ function renderStaff() {
   `;
 }
 
+function itRoleOption([key, role]) {
+  return `
+    <button class="role-button ${currentItRole === key ? "active" : ""}" type="button" data-it-role="${key}">
+      <strong>${role.label}</strong>
+      <span>${role.permissions.join(" · ")}</span>
+    </button>
+  `;
+}
+
+function accessRequestCard(item) {
+  return `
+    <article class="staff-card">
+      <div class="staff-card-top">
+        <div>
+          <div class="tag">${item.ticket} · ${item.team}</div>
+          <h3 class="staff-title">${item.name}</h3>
+        </div>
+        <span class="status-badge">${item.risk} risk</span>
+      </div>
+      <p class="summary">${item.request}</p>
+      <div class="staff-meta-grid">
+        <span>Status<br><strong>${item.status}</strong></span>
+        <span>Requested<br><strong>Today</strong></span>
+        <span>Owner<br><strong>IT</strong></span>
+      </div>
+      <div class="button-row">
+        <button class="primary-button" type="button" data-it-action="approve" ${canIt("approveAccess") ? "" : "disabled"}>Approve access</button>
+        <button class="secondary-button" type="button" data-it-action="route" ${canIt("resetMfa") || canIt("approveAccess") ? "" : "disabled"}>Route</button>
+      </div>
+    </article>
+  `;
+}
+
+function accountHealthRow(account) {
+  return `
+    <div>
+      <strong>${account.name}</strong>
+      <span>${account.role} · MFA ${account.mfa} · ${account.session} · ${account.lastSeen}</span>
+    </div>
+  `;
+}
+
+function renderItPortal() {
+  const role = itRoleDefinitions[currentItRole];
+  appView.innerHTML = `
+    <section class="screen staff-screen it-screen">
+      <div class="screen-header">
+        <div>
+          <div class="eyebrow">IT department access control</div>
+          <h1 class="screen-title">IT Access Desk</h1>
+        </div>
+      </div>
+
+      <section class="module orange">
+        <h2 class="module-title">${role.label}</h2>
+        <p class="summary">${role.summary}</p>
+        <div class="permission-grid">
+          ${permissionPill("Approve access", canIt("approveAccess"))}
+          ${permissionPill("Assign roles", canIt("assignRoles"))}
+          ${permissionPill("Reset MFA", canIt("resetMfa"))}
+          ${permissionPill("Suspend sessions", canIt("suspendSession"))}
+          ${permissionPill("Deactivate accounts", canIt("deactivate"))}
+          ${permissionPill("Export audit logs", canIt("exportLogs"))}
+        </div>
+      </section>
+
+      <div class="section-label">IT role</div>
+      <div class="role-grid">
+        ${Object.entries(itRoleDefinitions).map(itRoleOption).join("")}
+      </div>
+
+      <div class="section-label">Access requests</div>
+      <div class="staff-list">
+        ${accessRequests.map(accessRequestCard).join("")}
+      </div>
+
+      <div class="section-label">Account health</div>
+      <section class="access-table">
+        ${accountHealth.map(accountHealthRow).join("")}
+      </section>
+
+      <div class="section-label">Permission assignment</div>
+      <form class="edit-form it-form">
+        <label>
+          Staff account
+          <select name="account" ${canIt("assignRoles") ? "" : "disabled"}>
+            <option>Maya Chen</option>
+            <option>Luis Ortega</option>
+            <option>Board Observer</option>
+          </select>
+        </label>
+        <label>
+          Role
+          <select name="role" ${canIt("assignRoles") ? "" : "disabled"}>
+            <option>Reporter</option>
+            <option>Editor</option>
+            <option>Admin</option>
+            <option>Viewer</option>
+          </select>
+        </label>
+        <label>
+          Access reason
+          <textarea name="reason" rows="4" ${canIt("assignRoles") ? "" : "disabled"}>Sponsor verified; assign least-privilege access for current assignment.</textarea>
+        </label>
+        <button class="primary-button" type="submit" ${canIt("assignRoles") ? "" : "disabled"}>Update access</button>
+      </form>
+
+      <div class="section-label red">Security audit</div>
+      <section class="audit-list">
+        ${itAuditEvents.map((event) => `<p>${event}</p>`).join("")}
+      </section>
+    </section>
+  `;
+}
+
 function renderStory(id) {
   const story = stories.find((item) => item.id === id) || stories[0];
   appView.innerHTML = `
@@ -544,7 +731,8 @@ const renderers = {
   alerts: renderAlerts,
   saved: renderSaved,
   support: renderSupport,
-  staff: renderStaff
+  staff: renderStaff,
+  it: renderItPortal
 };
 
 function setActiveNav(viewName) {
@@ -614,6 +802,21 @@ document.addEventListener("click", (event) => {
     const action = workflowButton.dataset.workflow;
     auditEvents.unshift(`${roleDefinitions[currentRole].label} attempted ${action}; prototype recorded the workflow event.`);
     renderStaff();
+    return;
+  }
+
+  const itRoleButton = event.target.closest("[data-it-role]");
+  if (itRoleButton) {
+    currentItRole = itRoleButton.dataset.itRole;
+    renderItPortal();
+    return;
+  }
+
+  const itActionButton = event.target.closest("[data-it-action]");
+  if (itActionButton) {
+    const action = itActionButton.dataset.itAction;
+    itAuditEvents.unshift(`${itRoleDefinitions[currentItRole].label} recorded ${action} action in IT Access Desk.`);
+    renderItPortal();
   }
 });
 
@@ -621,6 +824,13 @@ document.addEventListener("submit", (event) => {
   if (event.target.matches(".newsletter-form")) {
     event.preventDefault();
     event.target.innerHTML = `<p class="summary"><strong>Signed up.</strong> This confirms the newsletter flow without sending data.</p>`;
+  }
+
+  if (event.target.matches(".it-form")) {
+    event.preventDefault();
+    itAuditEvents.unshift(`${itRoleDefinitions[currentItRole].label} updated staff access assignment.`);
+    event.target.insertAdjacentHTML("beforeend", `<p class="form-confirmation">Access update recorded in prototype workspace.</p>`);
+    return;
   }
 
   if (event.target.matches(".edit-form")) {

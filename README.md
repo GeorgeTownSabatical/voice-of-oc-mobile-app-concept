@@ -2,7 +2,7 @@
 
 A working static mobile prototype and design handoff for a Voice of OC civic news app concept.
 
-The prototype translates Voice of OC's current website identity into a mobile product system for local accountability reporting, city following, civic alerts, saved stories, newsletter signup, nonprofit support, and a staff-editable newsroom workspace.
+The prototype translates Voice of OC's current website identity into a mobile product system for local accountability reporting, city following, civic alerts, saved stories, newsletter signup, nonprofit support, a staff-editable newsroom workspace, and an IT access-management portal.
 
 ## Run locally
 
@@ -35,6 +35,16 @@ The `Staff` tab demonstrates a lightweight editorial workspace with stratified a
 - Viewer: read-only review for board, legal, partner, or observer access
 
 This is a front-end concept model only. A production version would connect these controls to authentication, CMS records, source-document storage, audit logs, and publishing APIs.
+
+## IT access portal concept
+
+The `IT` tab demonstrates a separate Access Desk for the technology department:
+
+- Helpdesk: verify identity, reset MFA, route requests, suspend risky sessions
+- Access Admin: approve access, assign newsroom roles, deactivate accounts
+- Security Auditor: review audit events, risky sessions, and permission changes
+
+This keeps editorial approval separate from technical account control. In production, this portal would connect to identity management, SSO/MFA, CMS role mapping, ticketing, session logs, and access-review exports.
 
 ## Brand basis
 

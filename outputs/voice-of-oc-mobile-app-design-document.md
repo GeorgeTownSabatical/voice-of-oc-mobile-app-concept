@@ -508,12 +508,19 @@ A designer should be able to produce first-round mobile wireframes from this doc
 - Donation/support screen.
 - Component sheet for article cards, chips, alert banners, CTAs, newsletter form, and source blocks.
 - Staff Studio screen for editorial drafting, approval, publishing permissions, and audit visibility.
+- IT Access Desk screen for account provisioning, MFA/session health, permission assignment, and access auditing.
 
-## 10. Staff Editing and Access
+## 10. Staff Editing, IT Access, and Portals
 
-The app should include a staff-facing workspace that is easy for newsroom staff to understand without technical training. It should support role-based access rather than giving every internal user the same controls.
+The app should include three clear portals:
 
-### Roles
+- Reader portal for public news consumption, alerts, saved stories, donations, and newsletters.
+- Staff Studio for editorial drafting, review, approval, and publishing workflow.
+- IT Access Desk for technical account provisioning, access control, MFA/session health, and audit review.
+
+The staff-facing workspace should be easy for newsroom staff to understand without technical training. It should support role-based access rather than giving every internal user the same controls. The IT workspace should handle account access without becoming an editorial approval surface.
+
+### Editorial roles
 
 | Role | Access level | Intended use |
 | --- | --- | --- |
@@ -521,6 +528,14 @@ The app should include a staff-facing workspace that is easy for newsroom staff 
 | Editor | Edit and approve newsroom content | Revise copy, approve stories, schedule alerts, request revisions |
 | Admin | Publish and manage staff access | Publish live content, manage users, review audit history |
 | Viewer | Read-only | Board, legal, partner, or observer review without editing rights |
+
+### IT roles
+
+| Role | Access level | Intended use |
+| --- | --- | --- |
+| Helpdesk | Identity support | Verify identity, reset MFA, route requests, suspend risky sessions |
+| Access Admin | Account provisioning | Approve access, assign newsroom roles, deactivate accounts |
+| Security Auditor | Security review | Review audit events, risky sessions, exports, and permission changes |
 
 ### Staff workspace requirements
 
@@ -532,6 +547,16 @@ The app should include a staff-facing workspace that is easy for newsroom staff 
 - Record workflow events in an audit trail.
 - Separate editorial approval from publishing, so an editor can approve but an admin controls final publication if that is the chosen policy.
 
+### IT workspace requirements
+
+- Show current IT operator role and allowed actions.
+- Provide an access request queue with requester, team, ticket, risk level, and status.
+- Show account health across MFA, sessions, role, and last activity.
+- Let authorized IT roles assign newsroom roles from a controlled form.
+- Keep Helpdesk, Access Admin, and Security Auditor permissions separate.
+- Record access approvals, MFA resets, deactivations, role changes, and session actions in the audit trail.
+- Keep IT account control separate from editorial content approval.
+
 ### Production integration notes
 
 - Connect role selection to real authentication and staff identity.
@@ -539,6 +564,7 @@ The app should include a staff-facing workspace that is easy for newsroom staff 
 - Log all edits, approvals, publish actions, and permission changes.
 - Keep source-document access separate from public story access when records are sensitive or embargoed.
 - Require confirmation for publish, alert-send, homepage-placement, and donation-campaign changes.
+- Connect IT Access Desk to SSO, MFA, staff directory, CMS role mapping, ticketing, and audit-log export systems.
 
 ## 11. Review Criteria
 
@@ -552,6 +578,7 @@ The v1 design is successful if:
 - Donation prompts support the nonprofit model without undermining editorial trust.
 - Alerts feel useful and controlled, not noisy.
 - Staff can identify what they are allowed to edit, approve, publish, or only review.
+- IT can identify pending access requests, account health, and which technical actions are allowed by role.
 - The design can be implemented as a mobile product without requiring a full rebrand.
 
 ## 12. Implementation Defaults
